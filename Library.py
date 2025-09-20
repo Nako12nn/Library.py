@@ -11,8 +11,36 @@ conn = psycopg2.connect(
 conn = psycopg2.connect("postgresql://maksym.com:Ps-q-l34!!d@localhost:5432/library_db")
 cur = conn.cursor()
 
+cur.execute("""
+CREATE TABLE Book(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(30),
+    author VARCHAR(30),
+    "year" INT,
+    genre VARCHAR(30),
+    accessible BOOLEAN DEFAULT TRUE        
+);
+""")
+conn.commit()
+
+
 class Library():
-    def __init__(self):
+    def __init__(self, list_ofBooks):
+        self.list_ofBooks = list_ofBooks
+
+    def __init__(self, list_ofUsers):
+        self.list_ofUsers = list_ofUsers
+
+    def find_book(self):
+        pass
+
+    def show_allBooks(self):
+        pass
+
+    def issue_book(self):
+        pass
+
+    def take_book(self):
         pass
 
 
@@ -32,7 +60,6 @@ class User():
 
     def check_borrowed_books(self):
         print(f"Borrowed books: {self.borrowed_books}") 
-
 
 
 
