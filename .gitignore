@@ -1,0 +1,23 @@
+# ---- Python ----
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ---- Virtual environments ----
+.venv/
+venv/
+env/
+
+# ---- VSCode ----
+.vscode/
+
+# ---- MacOS system files ----
+.DS_Store
+
+# ---- Temporary / test files ----
+tempCodeRunnerFile.py
+*.log
+*.tmp
+*.file
+
