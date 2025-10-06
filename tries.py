@@ -6,8 +6,5 @@ def is_smpl_num(n):
         return f"Number {n} is simple"
     else:
         return f"Number {n} is not simple"
- 
-
-
 
 print(is_smpl_num(9))
