@@ -9,11 +9,29 @@ class Library():
     def add_user(self, user):
         self.users.append(user)
 
-    def find_book(self,book_id): 
+    def __str__(self):
         for book in self.books:
-            if book.book_id == book_id:
-               return book
-        return None
+            for user in self.users:
+                f"{book.name} ({'available' if book.is_available else 'borrowed'})"
+                f"{user.name} {user.lastname} | id - {user.user_id}"
+
+    def show_all_books(self):
+        for i in self.books:
+            print(i)
+
+    def show_all_users(self):
+        for x in self.users:
+            print(x)
+
+    def show_borrowed_books(self):
+        for i in self.users:
+            if i.borrowed_books:
+                print(i)
+                for book in self.books:
+                    if book.book_id == i:
+                        return book
+                else:
+                    continue    
 
     def get_user_by_id(self, user_id):
         for user in self.users:
@@ -29,7 +47,7 @@ class Library():
 
     def issue_book_to_user(self, user_id, book_id):
         user = self.get_user_by_id(user_id)
-        book = self.find_book(book_id)
+        book = self.get_book_by_id(book_id)
 
         if not user:
             return "User is not found"
@@ -38,22 +56,20 @@ class Library():
         if not book.is_available:
             return f"Book {book} is not available"
         
-        user.borrowed_books.append(book)
-        book.is_available = False
+        user.borrow_book(book)
         return f"The Book {book} issued to {user}"
         
     def return_book_from_user(self, user_id, book_id):
         user = self.get_user_by_id(user_id)
-        book = self.find_book(book_id)
+        book = self.get_book_by_id(book_id)
 
-        if not user and book:
+        if not user or not book:
             return "User or Book not found"
         
         if book not in user.borrowed_books:
             return f"{user.name} does not have this book"
 
-        user.borrowed_books.remove(book)
-        book.is_available = True
+        user.return_book(book)
         return f"The Book '{book}' is returned by {user.name}."
         
 
@@ -64,20 +80,25 @@ class User():
         self.lastname = lastname
         self.user_id = user_id
         self.borrowed_books = []
+    
+    def borrow_book(self, book):
+        self.borrowed_books.append(book)
+        book.is_available = False
 
-    def check_borrowed_books(self):
-       # print(self.borrowed_books)
-       pass
+    def return_book(self, book):
+        self.borrowed_books.remove(book)
+        book.is_available = True   
 
     def __repr__(self):
         return f"{self.name!r} | {self.lastname!r} | {self.user_id}"
     
-    def borrow_book(self):
-        pass
-
-    def return_book(self):
-        pass    
-
+    def __str__(self):
+        return f"{self.name} {self.lastname}  | id - {self.user_id}"
+    
+    def check_borrowed_books(self):
+        return f"Borrowed books: {self.borrowed_books}"
+    
+    
 
 class Book():
     def __init__(self, name, author, book_id, year, genre, is_available):
@@ -89,10 +110,10 @@ class Book():
         self.is_available = is_available
 
     def __str__(self):
-        return f"{self.name} | {self.author} | {self.book_id} | {self.genre} | {self.year} | {self.is_available}"
+        return f"{self.name} | {self.author} | {self.book_id} | {self.genre} | {self.year} | {self.is_available}| "
     
     def __repr__(self):
-        return f"Book({self.name!r}, {self.author!r}, {self.year})"
+        return f"{self.name!r}, {self.author!r}, {self.year}, {self.book_id}, {self.genre}, {self.is_available}| "
 
     def toggle_status(self):
         self.is_available = not self.is_available
@@ -120,9 +141,6 @@ lib.add_book(book_6)
 book_7 = Book('The one', 'John', 7, 2020, 'Novel', True)
 lib.add_book(book_7)
 
-print(book_7,'\n',book_6)
-
-print()
 
 user_1 = User('Maxim', 'Nakonechnuiy', 1)
 lib.add_user(user_1)
@@ -133,25 +151,12 @@ lib.add_user(user_2)
 user_3 = User('Vadim', 'Nakonechnuiy', 3)
 lib.add_user(user_3)
 
-for i in lib.users:
-    print(i)
 
+print(lib.issue_book_to_user(1, 6))
+lib.show_borrowed_books()
 print()
 
-print(lib.issue_book_to_user(1, 6))
-print(user_1.borrowed_books)
-print(lib.issue_book_to_user(1, 6))
-print(lib.return_book_from_user(1, 6))
-print(lib.issue_book_to_user(1, 6))
+print(lib.show_borrowed_books())
 
-print(lib.issue_book_to_user(2, 7))
-print(user_2.borrowed_books)
-
-
-print(lib.issue_book_to_user(3, 5))
-print(user_3.borrowed_books)
-
-print(lib.find_book(5))
-print(lib.find_book(7))
-print(lib.find_book(6))
+print()
 
