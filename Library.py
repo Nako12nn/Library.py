@@ -10,14 +10,11 @@ class Library():
         self.users.append(user)
 
     def __str__(self):
-        for book in self.books:
-            for user in self.users:
-                f"{book.name} ({'available' if book.is_available else 'borrowed'})"
-                f"{user.name} {user.lastname} | id - {user.user_id}"
+        new_list = []
+        pass
 
     def show_all_books(self):
-        for i in self.books:
-            print(i)
+        return self.books
 
     def show_all_users(self):
         for x in self.users:
@@ -26,12 +23,10 @@ class Library():
     def show_borrowed_books(self):
         for i in self.users:
             if i.borrowed_books:
+                print(i.borrowed_books)
                 print(i)
-                for book in self.books:
-                    if book.book_id == i:
-                        return book
-                else:
-                    continue    
+            else:
+                continue    
 
     def get_user_by_id(self, user_id):
         for user in self.users:
@@ -57,6 +52,7 @@ class Library():
             return f"Book {book} is not available"
         
         user.borrow_book(book)
+        book.is_available = False
         return f"The Book {book} issued to {user}"
         
     def return_book_from_user(self, user_id, book_id):
@@ -67,10 +63,11 @@ class Library():
             return "User or Book not found"
         
         if book not in user.borrowed_books:
-            return f"{user.name} does not have this book"
+            return f"{user.title} does not have this book"
 
         user.return_book(book)
-        return f"The Book '{book}' is returned by {user.name}."
+        book.is_available = True
+        return f"The Book '{book}' is returned by {user.title}."
         
 
 
@@ -83,26 +80,26 @@ class User():
     
     def borrow_book(self, book):
         self.borrowed_books.append(book)
-        book.is_available = False
 
     def return_book(self, book):
-        self.borrowed_books.remove(book)
-        book.is_available = True   
+        self.borrowed_books.remove(book)   
 
     def __repr__(self):
-        return f"{self.name!r} | {self.lastname!r} | {self.user_id}"
+        return f"{self.name!r} {self.lastname!r} {self.user_id}"
     
     def __str__(self):
         return f"{self.name} {self.lastname}  | id - {self.user_id}"
     
     def check_borrowed_books(self):
-        return f"Borrowed books: {self.borrowed_books}"
+        for i in self.borrowed_books:
+            print(i)
+        #return f"Borrowed books:"
     
     
 
 class Book():
-    def __init__(self, name, author, book_id, year, genre, is_available):
-        self.name = name 
+    def __init__(self, title, author, book_id, year, genre, is_available):
+        self.title = title 
         self.author = author
         self.book_id = book_id
         self.year = year
@@ -110,14 +107,11 @@ class Book():
         self.is_available = is_available
 
     def __str__(self):
-        return f"{self.name} | {self.author} | {self.book_id} | {self.genre} | {self.year} | {self.is_available}| "
+        return f"{self.title} | {self.author} | {self.book_id} | {self.genre} | {self.year} | {self.is_available}| "
     
     def __repr__(self):
-        return f"{self.name!r}, {self.author!r}, {self.year}, {self.book_id}, {self.genre}, {self.is_available}| "
+        return f"{self.title!r} {self.author!r} {self.year} {self.book_id} {self.genre} {self.is_available} "
 
-    def toggle_status(self):
-        self.is_available = not self.is_available
-        return self.is_available
 
 lib = Library()
 book_1 = Book('Jack', 'Maxim', 1, 2025, 'fiction', True)
@@ -155,8 +149,10 @@ lib.add_user(user_3)
 print(lib.issue_book_to_user(1, 6))
 lib.show_borrowed_books()
 print()
-
-print(lib.show_borrowed_books())
-
 print()
+print(lib.__str__())
+print()
+print(lib.show_all_books())
+print()
+user_1.check_borrowed_books()
 
