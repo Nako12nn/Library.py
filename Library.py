@@ -10,23 +10,35 @@ class Library():
         self.users.append(user)
 
     def __str__(self):
-        new_list = []
-        pass
+        if self.books:
+            books_str = "\n".join(f"{book.title} {book.author}" for book in self.books)
+        else:
+            books_str = "No items there"
+        
+        if self.users:
+            users_str = "\n".join(f"{user.name} {user.lastname}" for user in self.users)
+        else:
+            users_str = "No items there"
 
+        output = f"\n{books_str}\n\n{users_str}"
+        return output 
+    
     def show_all_books(self):
-        return self.books
+        books_str = "\n".join(f"{book.title} {book.author}" for book in self.books)
+        return books_str
 
     def show_all_users(self):
-        for x in self.users:
-            print(x)
+        users_str = "\n".join(f"{user.name} {user.lastname}" for user in self.users)
+        return users_str
 
     def show_borrowed_books(self):
+        output_lines = []
         for i in self.users:
-            if i.borrowed_books:
-                print(i.borrowed_books)
-                print(i)
-            else:
-                continue    
+            borrowed_list = [book.title for book in i.borrowed_books]
+            if borrowed_list:
+                borrowed_str = ", ".join(borrowed_list)
+                output_lines.append(f"{i.name} {i.lastname} borrowed: {borrowed_str}")
+        return "\n".join(output_lines)
 
     def get_user_by_id(self, user_id):
         for user in self.users:
@@ -63,11 +75,11 @@ class Library():
             return "User or Book not found"
         
         if book not in user.borrowed_books:
-            return f"{user.title} does not have this book"
+            return f"{user.name} does not have this book"
 
         user.return_book(book)
         book.is_available = True
-        return f"The Book '{book}' is returned by {user.title}."
+        return f"The Book '{book.title}' is returned by {user.name}."
         
 
 
@@ -91,11 +103,13 @@ class User():
         return f"{self.name} {self.lastname}  | id - {self.user_id}"
     
     def check_borrowed_books(self):
-        for i in self.borrowed_books:
-            print(i)
-        #return f"Borrowed books:"
-    
-    
+        if self.borrowed_books:
+            borrowed_str = '\n'.join(f"{book.title} by {book.author} {book.book_id}" for book in self.borrowed_books)
+        else:
+            borrowed_str = "No borrowed books"
+        return borrowed_str
+
+
 
 class Book():
     def __init__(self, title, author, book_id, year, genre, is_available):
@@ -107,7 +121,7 @@ class Book():
         self.is_available = is_available
 
     def __str__(self):
-        return f"{self.title} | {self.author} | {self.book_id} | {self.genre} | {self.year} | {self.is_available}| "
+        return f"{self.title} | {self.author} | {self.book_id} | {self.genre} | {self.year} | {self.is_available}"
     
     def __repr__(self):
         return f"{self.title!r} {self.author!r} {self.year} {self.book_id} {self.genre} {self.is_available} "
@@ -147,12 +161,8 @@ lib.add_user(user_3)
 
 
 print(lib.issue_book_to_user(1, 6))
-lib.show_borrowed_books()
 print()
+print(lib.issue_book_to_user(1, 7))
+print(lib.issue_book_to_user(1, 5))
 print()
-print(lib.__str__())
-print()
-print(lib.show_all_books())
-print()
-user_1.check_borrowed_books()
-
+print(user_1.check_borrowed_books())
